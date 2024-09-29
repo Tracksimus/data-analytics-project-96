@@ -2,7 +2,7 @@
 with tab1 as (
 select distinct on
 (s.visitor_id)
-s.visitor_id as visitor_id,
+   s.visitor_id as visitor_id,
 s.visit_date as visit_date,
 s.source as utm_source,
 s.medium as utm_medium,
