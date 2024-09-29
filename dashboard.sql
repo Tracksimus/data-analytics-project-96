@@ -1,17 +1,16 @@
 -- Исходный набор данных
 with tab1 as (
-select distinct on
-(s.visitor_id)
+select distinct on (s.visitor_id)
    s.visitor_id as visitor_id,
-s.visit_date as visit_date,
-s.source as utm_source,
-s.medium as utm_medium,
-s.campaign as utm_campaign,
-l.lead_id as lead_id,
-l.created_at as created_at,
-l.amount as amount,
-l.closing_reason as closing_reason,
-l.status_id as status_id
+   s.visit_date as visit_date,
+   s.source as utm_source,
+   s.medium as utm_medium,
+   s.campaign as utm_campaign,
+   l.lead_id as lead_id,
+   l.created_at as created_at,
+   l.amount as amount,
+   l.closing_reason as closing_reason,
+   l.status_id as status_id
 from
 sessions as s
 left join leads as l
