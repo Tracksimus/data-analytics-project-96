@@ -176,11 +176,11 @@ source_and_costs as (
 total_costs as (
     select
         visit_date::date as visit_date,
-        SUM(daily_spent) as total_cost
+        sum(daily_spent) as total_cost
     from
         source_and_costs
     group by
-        1
+        visit_date
 )
 
 select
@@ -193,7 +193,7 @@ inner join total_costs as tc
     on
         o.visit_date = tc.visit_date
 order by
-    1;
+    o.visit_date;
 -- дата закрытия лидов:
 with table1 as (
     select distinct on
@@ -217,8 +217,8 @@ with table1 as (
     where
         s.medium in ('cpc', 'cpm', 'cpa', 'youtube', 'cpp', 'tg', 'social')
     order by
-        1,
-        2 desc
+        s.visitor_id,
+        s.visit_date desc
 ),
 
 visitors_and_leads as (
@@ -226,11 +226,11 @@ visitors_and_leads as (
     from
         table1
     order by
-        8 desc nulls last,
-        2,
-        3,
-        4,
-        5
+        l.amount desc nulls last,
+        s.visit_date,
+        utm_source,
+        utm_medium,
+        utm_campaign
 ),
 
 date_close as (
@@ -242,18 +242,18 @@ date_close as (
     where
         lead_id is not null
     order by
-        2
+        date_close
 )
 
 select
     date_close::date,
-    COUNT(*) as leads_count
+    count(*) as leads_count
 from
     date_close
 group by
-    1
+    date
 order by
-    1;
+    date;
 
 -- кол-во дней с момента перехода по рекламе до закрытия лида
 with table1 as (
@@ -278,8 +278,8 @@ with table1 as (
     where
         s.medium in ('cpc', 'cpm', 'cpa', 'youtube', 'cpp', 'tg', 'social')
     order by
-        1,
-        2 desc
+        s.visitor_id,
+        s.visit_date desc
 ),
 
 visitors_and_leads as (
@@ -287,11 +287,11 @@ visitors_and_leads as (
     from
         table1
     order by
-        8 desc nulls last,
-        2,
-        3,
-        4,
-        5
+        l.amount desc nulls last,
+        s.visit_date,
+        utm_source,
+        utm_medium,
+        utm_campaign
 ),
 
 days_close as (
@@ -303,26 +303,26 @@ days_close as (
     where
         lead_id is not null
     order by
-        2
+        days_close
 )
 
 select
     days_close,
-    COUNT(*) as leads_count
+    count(*) as leads_count
 from
     days_close
 group by
-    1
+    days_close
 order by
-    1;
+    days_close;
 -- конверсия из клика в лид, из лида в оплату
 select
-    ROUND(
-        SUM(tab2.leads_count) / SUM(tab2.visitors_count) * 100,
+    round(
+        sum(tab2.leads_count) / sum(tab2.visitors_count) * 100,
         2
     ) as conversion_leads,
-    ROUND(
-        SUM(tab2.purchases_count) / SUM(tab2.leads_count) * 100,
+    round(
+        sum(tab2.purchases_count) / sum(tab2.leads_count) * 100,
         2
     ) as conversion_paid
 from
@@ -330,9 +330,9 @@ from
 -- CUSTOM SQL для поля "cpu" в таблице "Метрики".
 select
     case
-        when SUM(visitors_count) = 0 then 0
-        else ROUND(
-            SUM(total_cost) / SUM(visitors_count),
+        when sum(visitors_count) = 0 then 0
+        else round(
+            sum(total_cost) / sum(visitors_count),
             2
         )
     end as cpu
@@ -340,15 +340,15 @@ from
     dataset;
 -- CUSTOM SQL для поля "выручка" в таблице "Окупаемость рекламы"
 select
-    SUM(
-        COALESCE(revenue, 0)
+    sum(
+        coalesce(revenue, 0)
     ) as income
 from
     dataset;
 -- CUSTOM SQL для поля "прибыль" в таблице "Окупаемость рекламы"
 select
-    SUM(
-        COALESCE(revenue, 0)
-    ) - SUM(total_cost) as profit
+    sum(
+        coalesce(revenue, 0)
+    ) - sum(total_cost) as profit
 from
     dataset;
