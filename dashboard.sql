@@ -126,13 +126,13 @@ order by
 with organic as (
     select
         visit_date::date as visit_date,
-        COUNT(*) as count_organic
+        count(*) as count_organic
     from
         sessions
     where
         medium = 'organic'
     group by
-        1
+        visit_date
 ),
 
 daily_costs as (
