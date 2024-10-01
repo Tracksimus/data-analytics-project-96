@@ -226,8 +226,8 @@ visitors_and_leads as (
     from
         table1
     order by
-        l.amount desc nulls last,
-        s.visit_date asc,
+        amount desc nulls last,
+        visit_date asc,
         utm_source asc,
         utm_medium asc,
         utm_campaign asc
@@ -287,8 +287,8 @@ visitors_and_leads as (
     from
         table1
     order by
-        l.amount desc nulls last,
-        s.visit_date asc,
+        amount desc nulls last,
+        visit_date asc,
         utm_source asc,
         utm_medium asc,
         utm_campaign asc
