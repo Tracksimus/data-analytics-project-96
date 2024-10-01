@@ -217,7 +217,7 @@ with table1 as (
     where
         s.medium in ('cpc', 'cpm', 'cpa', 'youtube', 'cpp', 'tg', 'social')
     order by
-        s.visitor_id,
+        s.visitor_id asc,
         s.visit_date desc
 ),
 
@@ -227,10 +227,10 @@ visitors_and_leads as (
         table1
     order by
         l.amount desc nulls last,
-        s.visit_date,
-        utm_source,
-        utm_medium,
-        utm_campaign
+        s.visit_date asc,
+        utm_source asc,
+        utm_medium asc,
+        utm_campaign asc
 ),
 
 date_close as (
@@ -278,7 +278,7 @@ with table1 as (
     where
         s.medium in ('cpc', 'cpm', 'cpa', 'youtube', 'cpp', 'tg', 'social')
     order by
-        s.visitor_id,
+        s.visitor_id asc,
         s.visit_date desc
 ),
 
@@ -288,10 +288,10 @@ visitors_and_leads as (
         table1
     order by
         l.amount desc nulls last,
-        s.visit_date,
-        utm_source,
-        utm_medium,
-        utm_campaign
+        s.visit_date asc,
+        utm_source asc,
+        utm_medium asc,
+        utm_campaign asc
 ),
 
 days_close as (
@@ -331,13 +331,10 @@ from
 select
     case
         when sum(visitors_count) = 0 then 0
-        else round(
-            sum(total_cost) / sum(visitors_count),
-            2
-        )
+        else
+            round(sum(total_cost) / sum(visitors_count), 2)
     end as cpu
-from
-    dataset;
+from dataset;
 -- CUSTOM SQL для поля "выручка" в таблице "Окупаемость рекламы"
 select
     sum(
