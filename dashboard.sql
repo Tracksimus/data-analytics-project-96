@@ -410,9 +410,9 @@ from
             when amount > 0 then 1
             else 0
         end as leed_amount,
-        to_char(date_trunc('day', created_at), 'YYYY-MM-DD') as date
+        to_char(date_trunc('day', created_at), 'YYYY-MM-DD') as date33
     from leads
-    order by date) as tab23;
+    order by date33) as tab23;
 
 --Расчет дохода
 select sum(amount) as revenue
@@ -425,9 +425,11 @@ from
             when amount > 0 then 1
             else 0
         end as leed_amount,
-        to_char(date_trunc('day', created_at), 'YYYY-MM-DD') AS date
+        to_char(date_trunc('day', created_at), 'YYYY-MM-DD') as date44
     from leads
-    order by date) as tab23;--Расчет дохода
+    order by date44) as tab23;
+
+--Расчет дохода
 select sum(amount) as revenue
 from
     (select
@@ -438,9 +440,9 @@ from
             when amount > 0 then 1
             else 0
         end as leed_amount,
-        to_char(date_trunc('day', created_at), 'YYYY-MM-DD') AS date
+        to_char(date_trunc('day', created_at), 'YYYY-MM-DD') as date55
     from leads
-    order by date) as tab23;
+    order by date55) as tab23;
 
 --Расчет расходов
 select sum(total_daily_spent) as consumption
@@ -487,24 +489,24 @@ from
 with tab as (
     select
         sessions.visitor_id,
-        visit_date,
-        source,
-        medium,
-        campaign,
-        created_at,
-        closing_reason,
-        status_id,
+        sessions.visit_date,
+        sessions.source,
+        sessions.medium,
+        sessions.campaign,
+        leads.created_at,
+        leads.closing_reason,
+        leads.status_id,
         coalesce(amount, 0) as amount,
         case
-            when created_at < visit_date then 'delete' else lead_id
-        end as lead_id,
+            when leads.created_at < sessions.visit_date then 'delete' else leads.lead_id
+            end as lead_id,
         row_number()
-            over (partition by sessions.visitor_id order by visit_date desc)
+            over (partition by sessions.visitor_id order by sessions.visit_date desc)
         as rn
     from sessions
     left join leads
         on sessions.visitor_id = leads.visitor_id
-    where medium in ('cpc', 'cpm', 'cpa', 'youtube', 'cpp', 'tg', 'social')
+    where sessions.medium in ('cpc', 'cpm', 'cpa', 'youtube', 'cpp', 'tg', 'social')
 ),
     
 tab2 as (
