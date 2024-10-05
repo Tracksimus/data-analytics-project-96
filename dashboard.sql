@@ -380,9 +380,9 @@ from
             when amount > 0 then 1
             else 0
         end as leed_amount,
-        to_char(date_trunc(day, created_at), 'YYYY-MM-DD') as date
+        to_char(date_trunc('day', created_at), 'YYYY-MM-DD') as date11
     from leads
-    order by date) as tab21;
+    order by date11) as tab21;
 
 --Расчет кол-ва закрытых лидов
 select sum(leed_amount) as purchases_count
@@ -395,9 +395,9 @@ from
             when amount > 0 then 1
             else 0
         end as leed_amount,
-        to_char(date_trunc('day', created_at), 'YYYY-MM-DD') as date
+        to_char(date_trunc('day', created_at), 'YYYY-MM-DD') as date22
     from leads
-    order by date) as tab22;
+    order by date22) as tab22;
 
 --Расчет дохода
 select sum(amount) as revenue
