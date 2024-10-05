@@ -512,9 +512,10 @@ with tab as (
     left join leads
         on sessions.visitor_id = leads.visitor_id
     where
-        sessions.medium in ('cpc', 'cpm', 'cpa',
-        'youtube', 'cpp', 'tg', 'social'
-            )
+        sessions.medium in (
+            'cpc', 'cpm', 'cpa',
+            'youtube', 'cpp', 'tg', 'social'
+        )
 ),
 
 tab2 as (
