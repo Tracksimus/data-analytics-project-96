@@ -499,11 +499,11 @@ with tab as (
         coalesce(leads.amount, 0) as amount,
         case
             when leads.created_at < sessions.visit_date
-                then 'delete' 
-        else leads.lead_id
-            end as lead_id,
+                then 'delete'
+            else leads.lead_id
+        end as lead_id,
         row_number()
-            over (
+        over (
             partition by sessions.visitor_id
             order by sessions.visit_date desc
         )
@@ -511,9 +511,10 @@ with tab as (
     from sessions
     left join leads
         on sessions.visitor_id = leads.visitor_id
-    where 
+    where
         sessions.medium in ('cpc', 'cpm', 'cpa',
-        'youtube', 'cpp', 'tg', 'social')
+        'youtube', 'cpp', 'tg', 'social'
+            )
 ),
 
 tab2 as (
@@ -634,17 +635,17 @@ tab6 as (
         utm_medium,
         utm_campaign
     order by total_cost desc
-    )
+)
 
 select
     *,
-    case 
+    case
         when visitors_count = 0 then null
         else total_cost / visitors_count
     end as cpu,
-    case 
+    case
         when leads_count = 0 then null
-        else total_cost / leads_count 
+        else total_cost / leads_count
     end as cpl,
     case
         when purchases_count = 0 then null
