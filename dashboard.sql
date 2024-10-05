@@ -357,7 +357,7 @@ from sessions;
 --Расчет кол-ва общих и уникальных визитов по всем каналам привлечения трафика
 select
     sessions.source,
-    count(sessions.visitor_id),
+    count(sessions.visitor_id) as count_all,
     count(distinct sessions.visitor_id) as count_distinct
 from sessions
 group by
@@ -365,7 +365,7 @@ group by
 
 --Расчет суммарных и уникальных посещений сайта онлайн-школы
 select
-    count(visitor_id),
+    count(visitor_id) as count_all,
     count(distinct visitor_id) as count_distinct
 from sessions;
 
@@ -380,7 +380,7 @@ from
             when amount > 0 then 1
             else 0
         end as leed_amount,
-        to_char(date_trunc('day', created_at), 'YYYY-MM-DD') AS date
+        to_char(date_trunc(day, created_at), 'YYYY-MM-DD') as date
     from leads
     order by date) as tab21;
 
@@ -395,7 +395,7 @@ from
             when amount > 0 then 1
             else 0
         end as leed_amount,
-        to_char(date_trunc('day', created_at), 'YYYY-MM-DD') AS date
+        to_char(date_trunc('day', created_at), 'YYYY-MM-DD') as date
     from leads
     order by date) as tab22;
 
@@ -627,9 +627,9 @@ group by
 order by total_cost desc)
     
 select *,
-    CASE WHEN visitors_count = 0 THEN NULL ELSE total_cost / visitors_count END AS cpu,
-    CASE WHEN leads_count = 0 THEN NULL ELSE total_cost / leads_count END AS cpl,
-    CASE WHEN purchases_count = 0 THEN NULL ELSE total_cost / purchases_count END AS cppu,
-    CASE WHEN total_cost = 0 THEN NULL ELSE ((revenue - total_cost) / total_cost) * 100 END AS roi
-FROM tab6
+    case when visitors_count = 0 then null else total_cost / visitors_count end as cpu,
+    case when leads_count = 0 then null else total_cost / leads_count end as cpl,
+    case when purchases_count = 0 then null else total_cost / purchases_count end as cppu,
+    case when total_cost = 0 then null else ((revenue - total_cost) / total_cost) * 100 end as roi
+from tab6
 order by roi asc;
