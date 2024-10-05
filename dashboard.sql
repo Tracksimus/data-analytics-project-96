@@ -351,109 +351,111 @@ from
     dataset;
 
 --Расчет кол-ва каналов привлечения
-SELECT count(DISTINCT source)
-FROM sessions;
+select count(distinct source)
+from sessions;
 
 --Расчет кол-ва общих и уникальных визитов по всем каналам привлечения трафика
-SELECT
+select
     sessions.source,
     count(sessions.visitor_id),
-    count(DISTINCT sessions.visitor_id) AS count_distinct
-FROM sessions
-GROUP BY
+    count(distinct sessions.visitor_id) as count_distinct
+from sessions
+group by
     sessions.source;
 
 --Расчет суммарных и уникальных посещений сайта онлайн-школы
-SELECT
+select
     count(visitor_id),
-    count(DISTINCT visitor_id) AS count_distinct
-FROM sessions;
+    count(distinct visitor_id) as count_distinct
+from sessions;
 
 --Расчет кол-ва лидов
-SELECT sum(leed) AS leads_count
-FROM
-    (SELECT
-        1 AS leed,
+select sum(leed) as leads_count
+from
+    (select
+        1 as leed,
         amount,
         closing_reason,
-        CASE
-            WHEN amount > 0 THEN 1
-            ELSE 0
-        END AS leed_amount,
+        case
+            when amount > 0 then 1
+            else 0
+        end as leed_amount,
         to_char(date_trunc('day', created_at), 'YYYY-MM-DD') AS date
-    FROM leads
-    ORDER BY date) AS tab21;
+    from leads
+    order by date) as tab21;
 
 --Расчет кол-ва закрытых лидов
-SELECT sum(leed_amount) AS purchases_count
-FROM
-    (SELECT
-        1 AS leed,
+select sum(leed_amount) as purchases_count
+from
+    (select
+        1 as leed,
         amount,
         closing_reason,
-        CASE
-            WHEN amount > 0 THEN 1
-            ELSE 0
-        END AS leed_amount,
+        case
+            when amount > 0 then 1
+            else 0
+        end as leed_amount,
         to_char(date_trunc('day', created_at), 'YYYY-MM-DD') AS date
-    FROM leads
-    ORDER BY date) AS tab22;
+    from leads
+    order by date) as tab22;
 
 --Расчет дохода
-SELECT sum(amount) AS revenue
-FROM
-    (SELECT
-        1 AS leed,
+select sum(amount) as revenue
+from
+    (select
+        1 as leed,
         amount,
         closing_reason,
-        CASE
-            WHEN amount > 0 THEN 1
-            ELSE 0
-        END AS leed_amount,
-        to_char(date_trunc('day', created_at), 'YYYY-MM-DD') AS date
-    FROM leads
-    ORDER BY date) AS tab23;--Расчет дохода
-SELECT sum(amount) AS revenue
-FROM
-    (SELECT
-        1 AS leed,
+        case
+            when amount > 0 then 1
+            else 0
+        end as leed_amount,
+        to_char(date_trunc('day', created_at), 'YYYY-MM-DD') as date
+    from leads
+    order by date) as tab23;
+
+--Расчет дохода
+select sum(amount) as revenue
+from
+    (select
+        1 as leed,
         amount,
         closing_reason,
-        CASE
-            WHEN amount > 0 THEN 1
-            ELSE 0
-        END AS leed_amount,
+        case
+            when amount > 0 then 1
+            else 0
+        end as leed_amount,
         to_char(date_trunc('day', created_at), 'YYYY-MM-DD') AS date
-    FROM leads
-    ORDER BY date) AS tab23;--Расчет дохода
-SELECT sum(amount) AS revenue
-FROM
-    (SELECT
-        1 AS leed,
+    from leads
+    order by date) as tab23;--Расчет дохода
+select sum(amount) as revenue
+from
+    (select
+        1 as leed,
         amount,
         closing_reason,
-        CASE
-            WHEN amount > 0 THEN 1
-            ELSE 0
-        END AS leed_amount,
+        case
+            when amount > 0 then 1
+            else 0
+        end as leed_amount,
         to_char(date_trunc('day', created_at), 'YYYY-MM-DD') AS date
-    FROM leads
-    ORDER BY date) AS tab23;
+    from leads
+    order by date) as tab23;
 
 --Расчет расходов
-SELECT sum(total_daily_spent) AS consumption
-FROM
+select sum(total_daily_spent) as consumption
+from
     (
-        SELECT
+        select
             campaign_name,
             utm_source,
             utm_medium,
             utm_campaign,
             utm_content,
             campaign_date,
-            sum(daily_spent) AS total_daily_spent
-        FROM
-            (SELECT
+            sum(daily_spent) as total_daily_spent
+        from
+            (select
                 campaign_name,
                 utm_source,
                 utm_medium,
@@ -461,9 +463,9 @@ FROM
                 utm_content,
                 campaign_date,
                 daily_spent
-            FROM vk_ads
-            UNION ALL
-            SELECT
+            from vk_ads
+            union all
+            select
                 campaign_name,
                 utm_source,
                 utm_medium,
@@ -471,15 +473,15 @@ FROM
                 utm_content,
                 campaign_date,
                 daily_spent
-            FROM ya_ads) AS combined_ads
-        GROUP BY
+            from ya_ads) as combined_ads
+        group by
             campaign_name,
             utm_source,
             utm_medium,
             utm_campaign,
             utm_content,
             campaign_date
-    ) AS tab24;
+    ) as tab24;
 
 --Сводная таблица
 with tab as (
@@ -504,6 +506,7 @@ with tab as (
         on sessions.visitor_id = leads.visitor_id
     where medium in ('cpc', 'cpm', 'cpa', 'youtube', 'cpp', 'tg', 'social')
 ),
+    
 tab2 as (
     select
         tab.visitor_id,
@@ -521,6 +524,7 @@ tab2 as (
     from tab
     where (tab.lead_id != 'delete' or tab.lead_id is null) and tab.rn = 1
 ),
+    
 amount as (
     select
         visit_date,
@@ -545,6 +549,7 @@ amount as (
         utm_medium,
         utm_campaign
 ),
+    
 tab4 as (
     select
         campaign_date,
@@ -562,6 +567,7 @@ tab4 as (
         daily_spent
     from ya_ads
 ),
+    
 cost as (
     select
         campaign_date as visit_date,
@@ -576,6 +582,7 @@ cost as (
         utm_medium,
         utm_campaign
 ),
+    
 tab5 as (
 select
         visit_date,
@@ -601,6 +608,7 @@ select
         null as total_cost
     from amount
 ),
+    
 tab6 as (
 select
     utm_source,
@@ -616,8 +624,8 @@ group by
     utm_source,
     utm_medium,
     utm_campaign
-order by total_cost desc
-)
+order by total_cost desc)
+    
 select *,
     CASE WHEN visitors_count = 0 THEN NULL ELSE total_cost / visitors_count END AS cpu,
     CASE WHEN leads_count = 0 THEN NULL ELSE total_cost / leads_count END AS cpl,
